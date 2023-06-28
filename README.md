@@ -1,87 +1,68 @@
-# {PROJECT NAME} [![Foundry][foundry-badge]][foundry] [![License: MIT][license-badge]][license]
+# ERC721Eligibility
 
-[foundry]: https://getfoundry.sh/
-[foundry-badge]: https://img.shields.io/badge/Built%20with-Foundry-FFDB1C.svg
-[license]: https://opensource.org/licenses/MIT
-[license-badge]: https://img.shields.io/badge/License-MIT-blue.svg
+ERC721Eligibility is an eligibility module for [Hats Protocol](https://github.com/hats-protocol/hats-protocol). It
+requires wearers of a given Hat to own at least one token from a set of TokenIDs from a set ERC721 Contract in order to
+be eligible.
 
-{Project Description}
+## ERC721Eligibility Details
 
+ERC721Eligibility inherits from the
+[HatsEligibilityModule](https://github.com/Hats-Protocol/hats-module#hatseligibilitymodule) base contract, from which it
+receives two major properties:
 
+- It can be cheaply deployed via the [HatsModuleFactory](https://github.com/Hats-Protocol/hats-module#hatsmodulefactory)
+  minimal proxy factory, and
+- It implements the
+  [IHatsEligibility](https://github.com/Hats-Protocol/hats-protocol/blob/main/src/Interfaces/IHatsEligibility.sol)
+  interface
 
+### Setup
 
-## Usage
+A ERC721Eligibility instance requires several parameters to be set at deployment, passed to the
+`HatsModuleFactory.createHatsModule()` function in various ways.
 
+#### Immutable values
 
-### Build
+- `hatId`: The id of the hat to which this the instance will be attached as an eligibility module, passed as itself
+- `TOKEN`: The address of the ERC721-compatible contract, abi-encoded (packed) and passed as `_otherImmutableArgs`
 
-Build the contracts:
+The following immutable values will also automatically be set within the instance at deployment:
 
-```sh
-$ forge build
-```
+- `IMPLEMENTATION`: The address of the ERC721Eligibility implementation contract
+- `HATS`: The address of the Hats Protocol contract
 
-### Clean
+#### Initial state values
 
-Delete the build artifacts and cache directories:
+The following are abi-encoded (unpacked) and then passed to the `HatsModuleFactory.createHatsModule()` function as
+`_initData`. These values can be changed after deployment by an admin of the `hatId` hat.
 
-```sh
-$ forge clean
-```
+- `eligibileTokens`: An array of uin256 tokenIds that will grant their owner eligibility
 
-### Compile
+### Admin Functionality
 
-Compile the contracts:
+Mutable hats grant their admins the ability to modify eligible tokens.
 
-```sh
-$ forge build
-```
+If called by an admin, `addEligibleTokens()` adds an array of eligible tokens to the existing array. The function does
+NOT check for duplication, so care should be taken to ensure duplicate values are not passed. Duplicate values may
+result in increased gas consumption and should be avoided.
 
-### Coverage
+If called by an admin `removeEligibleToken()` removes a specific tokenID from the array `eligibleTokens`. If the token
+is not found in the array, it will revert.
 
-Get a test coverage report:
+### Changing Parameters
 
-```sh
-$ forge coverage
-```
+The following parameters can be changed after deployment by an admin of the `hatId` hat. Changes are only allowed while
+the `hatId` is mutable.
 
-### Format
+- `eligibleTokens`, by calling the `addEligibleTokens()` or `removeEligibleToken()` functions.
 
-Format the contracts:
+NOTE: duplicate values inputted into eligibleTokens will result in increased gas consumption and should be avoided.
 
-```sh
-$ forge fmt
-```
+## Development
 
-### Gas Usage
+This repo uses Foundry for development and testing. To get started:
 
-Get a gas report:
-
-```sh
-$ forge test --gas-report
-```
-
-### Lint
-
-Lint the contracts:
-
-```sh
-$ pnpm lint
-```
-
-### Test
-
-Run the tests:
-
-```sh
-$ forge test
-```
-
-## Acknowledgement
-
-This repository was created using a forked template, originally found here: [PaulRBerg/foundry-template](https://github.com/PaulRBerg/foundry-template)
-
-
-## License
-
-This project is licensed under MIT.
+1. Fork the project
+2. Install [Foundry](https://book.getfoundry.sh/getting-started/installation)
+3. To compile the contracts, run `forge build`
+4. To test, run `forge test`
