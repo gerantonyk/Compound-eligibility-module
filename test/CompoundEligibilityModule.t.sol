@@ -52,6 +52,7 @@ contract ERC721EligibilityTest is Test, DeployImplementation {
     event ERC721Eligibility_TokenRemoved(uint256 hatId, uint256 token);
 
     function deployFactoryContracts() public {
+        console2.log("prueba");
         // deploy the clone factory
         // factory = new HatsModuleFactory{ salt: SALT}(hats, FACTORY_VERSION);
         factory = deployModuleFactory(hats, SALT, FACTORY_VERSION);

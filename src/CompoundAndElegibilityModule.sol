@@ -9,7 +9,7 @@ import { HatsEligibilityModule, HatsModule } from "hats-module/HatsEligibilityMo
  * @notice A Hats Protocol eligibility contract that allows owners to specifi multiple Elefibility Modules
  */
 
-contract CompoundEligibility is HatsEligibilityModule {
+contract ERC721Eligibility is HatsEligibilityModule {
     /*//////////////////////////////////////////////////////////////
                               EVENTS
     //////////////////////////////////////////////////////////////*/
@@ -70,7 +70,7 @@ contract CompoundEligibility is HatsEligibilityModule {
                             CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
 
-    /// @notice Deploy the CompoundEligibility implementation contract and set its version
+    /// @notice Deploy the ERC721Eligibility implementation contract and set its version
     /// @dev This is only used to deploy the implementation contract, and should not be used to deploy clones
     constructor(string memory _version) HatsModule(_version) { }
 
@@ -91,16 +91,9 @@ contract CompoundEligibility is HatsEligibilityModule {
         override
         returns (bool eligible, bool standing)
     {
-        bool eligible1; //false by default
-        bool eligible2; //false by default
+        (bool eligible1,) = EMODULE1().getWearerStatus(_wearer, _hatId);
 
-        try EMODULE1().getWearerStatus(_wearer, _hatId) returns (bool _eligible, bool) {
-            eligible1 = _eligible;
-        } catch { }
-
-        try EMODULE1().getWearerStatus(_wearer, _hatId) returns (bool _eligible, bool) {
-            eligible2 = _eligible;
-        } catch { }
+        (bool eligible2,) = EMODULE2().getWearerStatus(_wearer, _hatId);
 
         return (eligible1 && eligible2, true);
     }
