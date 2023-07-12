@@ -1,22 +1,22 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
+import { Test, console2 } from "forge-std/Test.sol";
 import { HatsEligibilityModule, HatsModule } from "hats-module/HatsEligibilityModule.sol";
-
 /**
- * @title CompoundAndEligibility
+ * @title CompoundEligibility
  * @author gerantonyk
  * @notice A Hats Protocol eligibility contract that allows owners to specifi multiple Elefibility Modules
  */
 
-contract ERC721Eligibility is HatsEligibilityModule {
+contract CompoundEligibility is HatsEligibilityModule {
     /*//////////////////////////////////////////////////////////////
                               EVENTS
     //////////////////////////////////////////////////////////////*/
 
     /// @notice Emitted when a CompoundEligibility for `hatId` is deployed to address `instance`
     event CompoundEligibility_Deployed(uint256 hatId, address instance, address eModule1, address eModule2);
-
+    //event CompoundEligibility_Deployed(uint256 hatId);
     /*//////////////////////////////////////////////////////////////
                           PUBLIC CONSTANTS
     //////////////////////////////////////////////////////////////*/
@@ -63,7 +63,9 @@ contract ERC721Eligibility is HatsEligibilityModule {
      */
     function setUp(bytes calldata) public override initializer {
         // log the deployment
+        console2.log(hatId(), address(this), address(EMODULE1()), address(EMODULE2()));
         emit CompoundEligibility_Deployed(hatId(), address(this), address(EMODULE1()), address(EMODULE2()));
+        // emit CompoundEligibility_Deployed(hatId());
     }
 
     /*//////////////////////////////////////////////////////////////

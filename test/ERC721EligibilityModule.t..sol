@@ -1,5 +1,5 @@
-// SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.19;
+// // SPDX-License-Identifier: UNLICENSED
+// pragma solidity 0.8.19;
 
 // import { Test, console2 } from "forge-std/Test.sol";
 // import { ERC721Eligibility } from "src/ERC721EligibilityModule.sol";
@@ -125,60 +125,60 @@ pragma solidity 0.8.19;
 //     }
 // }
 
-// contract HarnessTest is ERC721EligibilityTest {
-//     ERC721EligibilityHarness public harness;
+// // contract HarnessTest is ERC721EligibilityTest {
+// //     ERC721EligibilityHarness public harness;
 
-//     function setUp() public virtual override {
-//         super.setUp();
-//         // deploy the harness implementation
-//         harnessImpl = new ERC721EligibilityHarness("harness version");
-//         // deploy an instance of the harness and initialize it with the same initData as `instance`
-//         harnessInstance = ERC721EligibilityHarness(
-//             deployModuleInstance(factory, address(harnessImpl), erc721Hat, otherImmutableArgs, initData)
-//         );
-//     }
-// }
+// //     function setUp() public virtual override {
+// //         super.setUp();
+// //         // deploy the harness implementation
+// //         harnessImpl = new ERC721EligibilityHarness("harness version");
+// //         // deploy an instance of the harness and initialize it with the same initData as `instance`
+// //         harnessInstance = ERC721EligibilityHarness(
+// //             deployModuleInstance(factory, address(harnessImpl), erc721Hat, otherImmutableArgs, initData)
+// //         );
+// //     }
+// // }
 
-// contract Internal_hatIsMutable is HarnessTest {
-//     function test_mutable_succeeds() public {
-//         assertTrue(harnessInstance.isMutable());
-//     }
+// // contract Internal_hatIsMutable is HarnessTest {
+// //     function test_mutable_succeeds() public {
+// //         assertTrue(harnessInstance.isMutable());
+// //     }
 
-//     function test_immutable_reverts() public {
-//         // change the stakerHat to be immutable
-//         vm.prank(dao);
-//         hats.makeHatImmutable(erc721Hat);
-//         // expect a revert
-//         vm.expectRevert(ERC721Eligibility_HatImmutable.selector);
-//         harnessInstance.isMutable();
-//     }
-// }
+// //     function test_immutable_reverts() public {
+// //         // change the stakerHat to be immutable
+// //         vm.prank(dao);
+// //         hats.makeHatImmutable(erc721Hat);
+// //         // expect a revert
+// //         vm.expectRevert(ERC721Eligibility_HatImmutable.selector);
+// //         harnessInstance.isMutable();
+// //     }
+// // }
 
-// contract Internal_onlyHatAdmin is HarnessTest {
-//     function test_hatAdmin_succeeds() public {
-//         vm.prank(dao);
-//         assertTrue(harnessInstance.isHatAdmin());
-//     }
+// // contract Internal_onlyHatAdmin is HarnessTest {
+// //     function test_hatAdmin_succeeds() public {
+// //         vm.prank(dao);
+// //         assertTrue(harnessInstance.isHatAdmin());
+// //     }
 
-//     function test_nonHatAdmin_reverts() public {
-//         // expect a revert
-//         vm.expectRevert(ERC721Eligibility_NotHatAdmin.selector);
-//         vm.prank(notAdmin);
-//         harnessInstance.isHatAdmin();
-//     }
-// }
+// //     function test_nonHatAdmin_reverts() public {
+// //         // expect a revert
+// //         vm.expectRevert(ERC721Eligibility_NotHatAdmin.selector);
+// //         vm.prank(notAdmin);
+// //         harnessInstance.isHatAdmin();
+// //     }
+// // }
 
-// contract Constructor is ERC721EligibilityTest {
-//     function test_version__() public {
-//         // version_ is the value in the implementation contract
-//         assertEq(implementation.version_(), MODULE_VERSION, "implementation version");
-//     }
+// // contract Constructor is ERC721EligibilityTest {
+// //     function test_version__() public {
+// //         // version_ is the value in the implementation contract
+// //         assertEq(implementation.version_(), MODULE_VERSION, "implementation version");
+// //     }
 
-//     function test_version_reverts() public {
-//         vm.expectRevert();
-//         implementation.version();
-//     }
-// }
+// //     function test_version_reverts() public {
+// //         vm.expectRevert();
+// //         implementation.version();
+// //     }
+// // }
 
 // contract SetUp is WithInstanceTest {
 //     function test_initData() public {
@@ -205,56 +205,56 @@ pragma solidity 0.8.19;
 //     }
 // }
 
-// contract GetWearerStatus is WithInstanceTest {
-//     function _eligibilityCheck(address _wearer, bool expect) internal {
-//         (bool eligible, bool standing) = instance.getWearerStatus(_wearer, erc721Hat);
-//         assertEq(eligible, expect, "eligible");
-//         assertEq(standing, true, "standing");
-//     }
+// // contract GetWearerStatus is WithInstanceTest {
+// //     function _eligibilityCheck(address _wearer, bool expect) internal {
+// //         (bool eligible, bool standing) = instance.getWearerStatus(_wearer, erc721Hat);
+// //         assertEq(eligible, expect, "eligible");
+// //         assertEq(standing, true, "standing");
+// //     }
 
-//     function test_getWearerStatus_true_true() public {
-//         _eligibilityCheck(eligible1, true);
-//     }
+// //     function test_getWearerStatus_true_true() public {
+// //         _eligibilityCheck(eligible1, true);
+// //     }
 
-//     function test_getWearerStatus_false_true() public {
-//         _eligibilityCheck(ineligible, false);
-//     }
-// }
+// //     function test_getWearerStatus_false_true() public {
+// //         _eligibilityCheck(ineligible, false);
+// //     }
+// // }
 
-// contract AdminFunctions is WithInstanceTest {
-//     function test_removeEligibleToken() public {
-//         uint256[] memory initial = instance.getAllEligibleTokens();
-//         assertEq(initial.length, 10, "initial length");
+// // contract AdminFunctions is WithInstanceTest {
+// //     function test_removeEligibleToken() public {
+// //         uint256[] memory initial = instance.getAllEligibleTokens();
+// //         assertEq(initial.length, 10, "initial length");
 
-//         vm.startPrank(dao);
-//         instance.removeEligibleToken(initial[8]);
-//         vm.stopPrank();
+// //         vm.startPrank(dao);
+// //         instance.removeEligibleToken(initial[8]);
+// //         vm.stopPrank();
 
-//         uint256[] memory afterCount = instance.getAllEligibleTokens();
-//         assertEq(afterCount.length, 9, "after length");
-//     }
+// //         uint256[] memory afterCount = instance.getAllEligibleTokens();
+// //         assertEq(afterCount.length, 9, "after length");
+// //     }
 
-//     function test_removeEligibleToken_InvalidToken() public {
-//         vm.expectRevert(ERC721Eligibility_TokenNotFound.selector);
-//         vm.startPrank(dao);
-//         instance.removeEligibleToken(100);
-//         vm.stopPrank();
-//     }
+// //     function test_removeEligibleToken_InvalidToken() public {
+// //         vm.expectRevert(ERC721Eligibility_TokenNotFound.selector);
+// //         vm.startPrank(dao);
+// //         instance.removeEligibleToken(100);
+// //         vm.stopPrank();
+// //     }
 
-//     function test_addEligibletokens() public {
-//         uint256[] memory initial = instance.getAllEligibleTokens();
-//         assertEq(initial.length, 10, "initial length");
+// //     function test_addEligibletokens() public {
+// //         uint256[] memory initial = instance.getAllEligibleTokens();
+// //         assertEq(initial.length, 10, "initial length");
 
-//         vm.startPrank(dao);
-//         uint256[] memory tokensToAdd = new uint256[](2);
-//         tokensToAdd[0] = 10;
-//         tokensToAdd[1] = 11;
-//         instance.addEligibleTokens(tokensToAdd);
-//         vm.stopPrank();
+// //         vm.startPrank(dao);
+// //         uint256[] memory tokensToAdd = new uint256[](2);
+// //         tokensToAdd[0] = 10;
+// //         tokensToAdd[1] = 11;
+// //         instance.addEligibleTokens(tokensToAdd);
+// //         vm.stopPrank();
 
-//         uint256[] memory afterCount = instance.getAllEligibleTokens();
-//         assertEq(afterCount.length, 12, "after length");
-//         assertEq(afterCount[10], 10);
-//         assertEq(afterCount[11], 11);
-//     }
-// }
+// //         uint256[] memory afterCount = instance.getAllEligibleTokens();
+// //         assertEq(afterCount.length, 12, "after length");
+// //         assertEq(afterCount[10], 10);
+// //         assertEq(afterCount[11], 11);
+// //     }
+// // }
