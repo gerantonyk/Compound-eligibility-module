@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
-import { Test, console2 } from "forge-std/Test.sol";
 import { HatsEligibilityModule, HatsModule } from "hats-module/HatsEligibilityModule.sol";
 /**
  * @title CompoundEligibility
@@ -10,13 +9,6 @@ import { HatsEligibilityModule, HatsModule } from "hats-module/HatsEligibilityMo
  */
 
 contract CompoundEligibility is HatsEligibilityModule {
-    /*//////////////////////////////////////////////////////////////
-                              EVENTS
-    //////////////////////////////////////////////////////////////*/
-
-    /// @notice Emitted when a CompoundEligibility for `hatId` is deployed to address `instance`
-    event CompoundEligibility_Deployed(uint256 hatId, address instance, address eModule1, address eModule2);
-    //event CompoundEligibility_Deployed(uint256 hatId);
     /*//////////////////////////////////////////////////////////////
                           PUBLIC CONSTANTS
     //////////////////////////////////////////////////////////////*/
@@ -53,19 +45,6 @@ contract CompoundEligibility is HatsEligibilityModule {
 
     function EMODULE2() public pure returns (HatsEligibilityModule) {
         return HatsEligibilityModule(_getArgAddress(92));
-    }
-    /*//////////////////////////////////////////////////////////////
-                            INITIALIZER
-    //////////////////////////////////////////////////////////////*/
-
-    /**
-     * @inheritdoc HatsModule
-     */
-    function setUp(bytes calldata) public override initializer {
-        // log the deployment
-        console2.log(hatId(), address(this), address(EMODULE1()), address(EMODULE2()));
-        emit CompoundEligibility_Deployed(hatId(), address(this), address(EMODULE1()), address(EMODULE2()));
-        // emit CompoundEligibility_Deployed(hatId());
     }
 
     /*//////////////////////////////////////////////////////////////

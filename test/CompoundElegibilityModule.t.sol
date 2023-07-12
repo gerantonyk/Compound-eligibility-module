@@ -8,7 +8,7 @@ import { DeployImplementation } from "script/CompoundEligibilityModule.s.sol";
 import {
     HatsModuleFactory, IHats, deployModuleInstance, deployModuleFactory
 } from "hats-module/utils/DeployFunctions.sol";
-import { MockTrueElegibilityModule } from "src/mocks/MockTrueElegibilityModule.sol";
+import { MockElegibilityModule } from "src/mocks/MockElegibilityModule.sol";
 
 contract CompoundEligibilityTest is Test, DeployImplementation {
     HatsModuleFactory public factory;
@@ -16,24 +16,19 @@ contract CompoundEligibilityTest is Test, DeployImplementation {
     bytes public otherImmutableArgs;
     bytes public initData;
 
-    // ERC721EligibilityHarness public harnessImpl;
-    // ERC721EligibilityHarness public harnessInstance;
-
     uint256 public tophat;
     uint256 public compoundHat;
     address public eligibility = makeAddr("eligibility");
-    address public toggle = makeAddr("toggle");
     address public dao = makeAddr("dao");
-    address public notAdmin = makeAddr("notAdmin");
 
-    address public eligible1 = makeAddr("eligible1");
-    address public eligible2 = makeAddr("eligible2");
-    address public eligible3 = makeAddr("eligible3");
+    address public eligibleInModule1 = makeAddr("eligibleInModule1");
+    address public eligibleInModule2 = makeAddr("eligibleInModule2");
+    address public eligibleInModule1and2 = makeAddr("eligibleInModule1and2");
     address public ineligible = makeAddr("ineligible");
 
     //aca tengo que poner los mockeos de los elegibility modules
-    MockTrueElegibilityModule public eModule1;
-    MockTrueElegibilityModule public eModule2;
+    MockElegibilityModule public eModule1;
+    MockElegibilityModule public eModule2;
 
     uint256[] eligibleTokens;
 
@@ -49,9 +44,6 @@ contract CompoundEligibilityTest is Test, DeployImplementation {
     error ERC721Eligibility_NotHatAdmin();
     error ERC721Eligibility_HatImmutable();
     error ERC721Eligibility_TokenNotFound();
-
-    event CompoundEligibility_Deployed(uint256 hatId, address instance, address eModule1, address eModule2);
-    //event CompoundEligibility_Deployed(uint256);
 
     function deployFactoryContracts() public {
         // deploy the clone factory
@@ -86,7 +78,7 @@ contract CompoundEligibilityTest is Test, DeployImplementation {
         // deploy the instance
 
         instance = CompoundEligibility(
-            deployModuleInstance(factory, address(implementation), _eligibleHat, otherImmutableArgs, "")
+            deployModuleInstance(factory, address(implementation), _eligibleHat, otherImmutableArgs, "deploy")
         );
     }
 }
@@ -95,8 +87,8 @@ contract WithInstanceTest is CompoundEligibilityTest {
     function setUp() public virtual override {
         super.setUp();
         // set deploy params
-        eModule1 = new MockTrueElegibilityModule("1");
-        eModule2 = new MockTrueElegibilityModule("1");
+        eModule1 = new MockElegibilityModule(eligibleInModule1,eligibleInModule1and2);
+        eModule2 = new MockElegibilityModule(eligibleInModule2,eligibleInModule1and2);
 
         // deploy the instance
         deployInstance(compoundHat, address(eModule1), address(eModule2));
@@ -107,50 +99,7 @@ contract WithInstanceTest is CompoundEligibilityTest {
     }
 }
 
-// contract HarnessTest is ERC721EligibilityTest {
-//     ERC721EligibilityHarness public harness;
-
-//     function setUp() public virtual override {
-//         super.setUp();
-//         // deploy the harness implementation
-//         harnessImpl = new ERC721EligibilityHarness("harness version");
-//         // deploy an instance of the harness and initialize it with the same initData as `instance`
-//         harnessInstance = ERC721EligibilityHarness(
-//             deployModuleInstance(factory, address(harnessImpl), erc721Hat, otherImmutableArgs, initData)
-//         );
-//     }
-// }
-
-// contract Internal_hatIsMutable is HarnessTest {
-//     function test_mutable_succeeds() public {
-//         assertTrue(harnessInstance.isMutable());
-//     }
-
-//     function test_immutable_reverts() public {
-//         // change the stakerHat to be immutable
-//         vm.prank(dao);
-//         hats.makeHatImmutable(erc721Hat);
-//         // expect a revert
-//         vm.expectRevert(ERC721Eligibility_HatImmutable.selector);
-//         harnessInstance.isMutable();
-//     }
-// }
-
-// contract Internal_onlyHatAdmin is HarnessTest {
-//     function test_hatAdmin_succeeds() public {
-//         vm.prank(dao);
-//         assertTrue(harnessInstance.isHatAdmin());
-//     }
-
-//     function test_nonHatAdmin_reverts() public {
-//         // expect a revert
-//         vm.expectRevert(ERC721Eligibility_NotHatAdmin.selector);
-//         vm.prank(notAdmin);
-//         harnessInstance.isHatAdmin();
-//     }
-// }
-
-// contract Constructor is ERC721EligibilityTest {
+// contract Constructor is CompoundEligibilityTest {
 //     function test_version__() public {
 //         // version_ is the value in the implementation contract
 //         assertEq(implementation.version_(), MODULE_VERSION, "implementation version");
@@ -162,84 +111,36 @@ contract WithInstanceTest is CompoundEligibilityTest {
 //     }
 // }
 
-contract SetUp is WithInstanceTest {
-    // function test_initData() public {
-    //     assertEq(instance.getAllEligibleTokens(), eligibleTokens, "eligibleTokens");
+// contract SetUp is WithInstanceTest {
+//     function test_immutables() public {
+//         assertEq(address(instance.EMODULE1()), address(eModule1), "ElegibilityModule 1");
+//         assertEq(address(instance.EMODULE2()), address(eModule2), "ElegibilityModule 2");
+//         assertEq(address(instance.HATS()), address(hats), "hats");
+//         assertEq(address(instance.IMPLEMENTATION()), address(implementation), "implementation");
+//         assertEq(instance.hatId(), compoundHat, "hatId");
+//     }
+// }
+
+contract GetWearerStatus is WithInstanceTest {
+    function _eligibilityCheck(address _wearer, bool expect) internal {
+        (bool eligible, bool standing) = instance.getWearerStatus(_wearer, compoundHat);
+        assertEq(eligible, expect, "eligible");
+        assertEq(standing, true, "standing");
+    }
+
+    // function test_getWearerStatus_true_and_false() public {
+    //     _eligibilityCheck(eligibleInModule1, false);
     // }
 
-    // function test_immutables() public {
-    //     assertEq(address(instance.EMODULE1()), address(eModule1), "ElegibilityModule 2");
-    //     assertEq(address(instance.EMODULE2()), address(eModule2), "ElegibilityModule 2");
-    //     assertEq(address(instance.HATS()), address(hats), "hats");
-    //     assertEq(address(instance.IMPLEMENTATION()), address(implementation), "implementation");
-    //     assertEq(instance.hatId(), compoundHat, "hatId");
+    // function test_getWearerStatus_false_and_true() public {
+    //     _eligibilityCheck(eligibleInModule2, false);
     // }
 
-    function test_emitDeployedEvent() public {
-        // prepare to deploy a new instance for a different hat
-        compoundHat = 1;
-        // predict the new instance address
-        address predicted = factory.getHatsModuleAddress(address(implementation), compoundHat, otherImmutableArgs);
-        // expect the event
-        vm.expectEmit(false, false, false, false);
+    // function test_getWearerStatus_false_and_false() public {
+    //     _eligibilityCheck(ineligible, false);
+    // }
 
-        emit CompoundEligibility_Deployed(compoundHat, predicted, address(eModule1), address(eModule2));
-
-        // emit CompoundEligibility_Deployed(compoundHat);
-        deployInstance(compoundHat, address(eModule1), address(eModule2));
+    function test_getWearerStatus_true_and_true() public {
+        _eligibilityCheck(eligibleInModule1and2, true);
     }
 }
-
-// contract GetWearerStatus is WithInstanceTest {
-//     function _eligibilityCheck(address _wearer, bool expect) internal {
-//         (bool eligible, bool standing) = instance.getWearerStatus(_wearer, erc721Hat);
-//         assertEq(eligible, expect, "eligible");
-//         assertEq(standing, true, "standing");
-//     }
-
-//     function test_getWearerStatus_true_true() public {
-//         _eligibilityCheck(eligible1, true);
-//     }
-
-//     function test_getWearerStatus_false_true() public {
-//         _eligibilityCheck(ineligible, false);
-//     }
-// }
-
-// contract AdminFunctions is WithInstanceTest {
-//     function test_removeEligibleToken() public {
-//         uint256[] memory initial = instance.getAllEligibleTokens();
-//         assertEq(initial.length, 10, "initial length");
-
-//         vm.startPrank(dao);
-//         instance.removeEligibleToken(initial[8]);
-//         vm.stopPrank();
-
-//         uint256[] memory afterCount = instance.getAllEligibleTokens();
-//         assertEq(afterCount.length, 9, "after length");
-//     }
-
-//     function test_removeEligibleToken_InvalidToken() public {
-//         vm.expectRevert(ERC721Eligibility_TokenNotFound.selector);
-//         vm.startPrank(dao);
-//         instance.removeEligibleToken(100);
-//         vm.stopPrank();
-//     }
-
-//     function test_addEligibletokens() public {
-//         uint256[] memory initial = instance.getAllEligibleTokens();
-//         assertEq(initial.length, 10, "initial length");
-
-//         vm.startPrank(dao);
-//         uint256[] memory tokensToAdd = new uint256[](2);
-//         tokensToAdd[0] = 10;
-//         tokensToAdd[1] = 11;
-//         instance.addEligibleTokens(tokensToAdd);
-//         vm.stopPrank();
-
-//         uint256[] memory afterCount = instance.getAllEligibleTokens();
-//         assertEq(afterCount.length, 12, "after length");
-//         assertEq(afterCount[10], 10);
-//         assertEq(afterCount[11], 11);
-//     }
-// }
