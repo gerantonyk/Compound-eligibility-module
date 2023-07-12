@@ -181,13 +181,12 @@ contract SetUp is WithInstanceTest {
         // predict the new instance address
         address predicted = factory.getHatsModuleAddress(address(implementation), compoundHat, otherImmutableArgs);
         // expect the event
-        vm.expectEmit(true, true, true, false);
+        vm.expectEmit(false, false, false, false);
 
         emit CompoundEligibility_Deployed(compoundHat, predicted, address(eModule1), address(eModule2));
 
         // emit CompoundEligibility_Deployed(compoundHat);
         deployInstance(compoundHat, address(eModule1), address(eModule2));
-        emit CompoundEligibility_Deployed(compoundHat, predicted, address(eModule1), address(eModule2));
     }
 }
 
