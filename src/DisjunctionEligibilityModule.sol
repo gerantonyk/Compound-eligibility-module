@@ -2,13 +2,14 @@
 pragma solidity 0.8.19;
 
 import { HatsEligibilityModule, HatsModule } from "hats-module/HatsEligibilityModule.sol";
+import { CompoundEligibility } from "src/CompoundEligibilityModule.sol";
 /**
  * @title CompoundEligibility
  * @author gerantonyk
  * @notice A Hats Protocol eligibility contract that allows owners to specifi multiple Elefibility Modules
  */
 
-contract CompoundEligibility is HatsEligibilityModule {
+contract DisjunctionEligibility is CompoundEligibility {
     /*//////////////////////////////////////////////////////////////
                           PUBLIC CONSTANTS
     //////////////////////////////////////////////////////////////*/
@@ -39,21 +40,14 @@ contract CompoundEligibility is HatsEligibilityModule {
     /**
      * @dev The first three getters are inherited from HatsEligibilityModule
      */
-    function EMODULE1() public pure returns (HatsEligibilityModule) {
-        return HatsEligibilityModule(_getArgAddress(72));
-    }
-
-    function EMODULE2() public pure returns (HatsEligibilityModule) {
-        return HatsEligibilityModule(_getArgAddress(92));
-    }
 
     /*//////////////////////////////////////////////////////////////
                             CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
 
-    /// @notice Deploy the ERC721Eligibility implementation contract and set its version
+    /// @notice Deploy the DisjunctionElegibility implementation contract and set its version
     /// @dev This is only used to deploy the implementation contract, and should not be used to deploy clones
-    constructor(string memory _version) HatsModule(_version) { }
+    constructor(string memory _version) CompoundEligibility(_version) { }
 
     /*//////////////////////////////////////////////////////////////
                       HATS ELIGIBILITY FUNCTION
@@ -72,10 +66,7 @@ contract CompoundEligibility is HatsEligibilityModule {
         override
         returns (bool eligible, bool standing)
     {
-        (bool eligible1,) = EMODULE1().getWearerStatus(_wearer, _hatId);
-
-        (bool eligible2,) = EMODULE2().getWearerStatus(_wearer, _hatId);
-
-        return (eligible1 && eligible2, true);
+        (bool eligible1, bool eligible2) = getModulesResult(_wearer, _hatId);
+        return (eligible1 || eligible2, true);
     }
 }
