@@ -2,12 +2,12 @@
 pragma solidity 0.8.19;
 
 import { Script, console2 } from "forge-std/Script.sol";
-import { ERC721Eligibility } from "src/ERC721EligibilityModule.sol";
+import { CompoundEligibility } from "src/CompoundElegibilityModule.sol";
 import { HatsModuleFactory, deployModuleInstance } from "hats-module/utils/DeployFunctions.sol";
 
-// Deploy the implementation contract for ERC721Eligibility
+// Deploy the implementation contract for CompoundEligibility
 contract DeployImplementation is Script {
-    ERC721Eligibility public implementation;
+    CompoundEligibility public implementation;
     bytes32 public SALT = bytes32(abi.encode(0x4a75)); // ~ H(4) A(a) T(7) S(5)
 
     string public version = "0.1.0"; // increment with each deploy
@@ -24,7 +24,7 @@ contract DeployImplementation is Script {
         vm.startBroadcast(deployer);
 
         // deploy the implementation
-        implementation = new ERC721Eligibility{ salt: SALT}(version);
+        implementation = new CompoundEligibility{ salt: SALT}(version);
 
         vm.stopBroadcast();
 
