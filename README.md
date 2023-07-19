@@ -38,3 +38,10 @@ This repo uses Foundry for development and testing. To get started:
 2. Install [Foundry](https://book.getfoundry.sh/getting-started/installation)
 3. To compile the contracts, run `forge build`
 4. To test, run `forge test`
+
+## Implementation
+
+Implementation:
+
+CompoundEligibilityModule: 0xd0a9C16260244abAe2cAeC206C327ADE7Dad4902
+DisjunctionEligibilityModule: 0xA8235882E63F7B8E59B8993046a5A2520776fFf3
