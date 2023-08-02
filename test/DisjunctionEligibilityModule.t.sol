@@ -2,22 +2,22 @@
 pragma solidity 0.8.19;
 
 import { Test, console2 } from "forge-std/Test.sol";
-import { CompoundEligibility } from "src/CompoundElegibilityModule.sol";
+import { DisjunctionEligibility } from "src/DisjunctionEligibilityModule.sol";
 
-import { DeployImplementation } from "script/CompoundEligibilityModule.s.sol";
+import { DeployImplementation } from "script/DisjunctionEligibilityModule.s.sol";
 import {
     HatsModuleFactory, IHats, deployModuleInstance, deployModuleFactory
 } from "hats-module/utils/DeployFunctions.sol";
 import { MockElegibilityModule } from "src/mocks/MockElegibilityModule.sol";
 
-contract CompoundEligibilityTest is Test, DeployImplementation {
+contract DisjunctionEligibilityTest is Test, DeployImplementation {
     HatsModuleFactory public factory;
-    CompoundEligibility public instance;
+    DisjunctionEligibility public instance;
     bytes public otherImmutableArgs;
     bytes public initData;
 
     uint256 public tophat;
-    uint256 public compoundHat;
+    uint256 public disjunctionHat;
     address public eligibility = makeAddr("eligibility");
     address public dao = makeAddr("dao");
 
@@ -58,7 +58,7 @@ contract CompoundEligibilityTest is Test, DeployImplementation {
     function createHats() public {
         vm.startPrank(dao);
         tophat = hats.mintTopHat(dao, "tophat", "");
-        compoundHat =
+        disjunctionHat =
             hats.createHat(tophat, "requires select ERC721 to wear", 5, defaultModule, defaultModule, true, "");
         vm.stopPrank();
     }
@@ -77,13 +77,13 @@ contract CompoundEligibilityTest is Test, DeployImplementation {
         otherImmutableArgs = abi.encodePacked(module1, module2);
         // deploy the instance
 
-        instance = CompoundEligibility(
+        instance = DisjunctionEligibility(
             deployModuleInstance(factory, address(implementation), _eligibleHat, otherImmutableArgs, "deploy")
         );
     }
 }
 
-contract WithInstanceTest is CompoundEligibilityTest {
+contract WithInstanceTest is DisjunctionEligibilityTest {
     function setUp() public virtual override {
         super.setUp();
         // set deploy params
@@ -91,54 +91,54 @@ contract WithInstanceTest is CompoundEligibilityTest {
         eModule2 = new MockElegibilityModule(eligibleInModule2,eligibleInModule1and2);
 
         // deploy the instance
-        deployInstance(compoundHat, address(eModule1), address(eModule2));
+        deployInstance(disjunctionHat, address(eModule1), address(eModule2));
 
         // change the stakerHat's eligibility to instance
         vm.prank(dao);
-        hats.changeHatEligibility(compoundHat, address(instance));
+        hats.changeHatEligibility(disjunctionHat, address(instance));
     }
 }
 
-// contract Constructor is CompoundEligibilityTest {
-//     function test_version__() public {
-//         // version_ is the value in the implementation contract
-//         assertEq(implementation.version_(), MODULE_VERSION, "implementation version");
-//     }
+contract Constructor is DisjunctionEligibilityTest {
+    function test_version__() public {
+        // version_ is the value in the implementation contract
+        assertEq(implementation.version_(), MODULE_VERSION, "implementation version");
+    }
 
-//     function test_version_reverts() public {
-//         vm.expectRevert();
-//         implementation.version();
-//     }
-// }
+    function test_version_reverts() public {
+        vm.expectRevert();
+        implementation.version();
+    }
+}
 
-// contract SetUp is WithInstanceTest {
-//     function test_immutables() public {
-//         assertEq(address(instance.EMODULE1()), address(eModule1), "ElegibilityModule 1");
-//         assertEq(address(instance.EMODULE2()), address(eModule2), "ElegibilityModule 2");
-//         assertEq(address(instance.HATS()), address(hats), "hats");
-//         assertEq(address(instance.IMPLEMENTATION()), address(implementation), "implementation");
-//         assertEq(instance.hatId(), compoundHat, "hatId");
-//     }
-// }
+contract SetUp is WithInstanceTest {
+    function test_immutables() public {
+        assertEq(address(instance.EMODULE1()), address(eModule1), "ElegibilityModule 1");
+        assertEq(address(instance.EMODULE2()), address(eModule2), "ElegibilityModule 2");
+        assertEq(address(instance.HATS()), address(hats), "hats");
+        assertEq(address(instance.IMPLEMENTATION()), address(implementation), "implementation");
+        assertEq(instance.hatId(), disjunctionHat, "hatId");
+    }
+}
 
 contract GetWearerStatus is WithInstanceTest {
     function _eligibilityCheck(address _wearer, bool expect) internal {
-        (bool eligible, bool standing) = instance.getWearerStatus(_wearer, compoundHat);
+        (bool eligible, bool standing) = instance.getWearerStatus(_wearer, disjunctionHat);
         assertEq(eligible, expect, "eligible");
         assertEq(standing, true, "standing");
     }
 
-    // function test_getWearerStatus_true_and_false() public {
-    //     _eligibilityCheck(eligibleInModule1, false);
-    // }
+    function test_getWearerStatus_true_and_false() public {
+        _eligibilityCheck(eligibleInModule1, true);
+    }
 
-    // function test_getWearerStatus_false_and_true() public {
-    //     _eligibilityCheck(eligibleInModule2, false);
-    // }
+    function test_getWearerStatus_false_and_true() public {
+        _eligibilityCheck(eligibleInModule2, true);
+    }
 
-    // function test_getWearerStatus_false_and_false() public {
-    //     _eligibilityCheck(ineligible, false);
-    // }
+    function test_getWearerStatus_false_and_false() public {
+        _eligibilityCheck(ineligible, false);
+    }
 
     function test_getWearerStatus_true_and_true() public {
         _eligibilityCheck(eligibleInModule1and2, true);
