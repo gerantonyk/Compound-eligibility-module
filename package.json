@@ -1,9 +1,9 @@
 {
-  "name": "@WhiteOakKong/ERC721-eligibility-module",
+  "name": "@gerantonyk/compound-eligibility-module",
   "description": "A Hats Protocol eligibility module based on tokenID specific ERC721 ownership",
   "version": "1.0.0",
   "author": {
-    "name": "WhiteOakKong",
+    "name": "gerantonyk",
     "url": "https://github.com/WhiteOakKong"
   },
   "devDependencies": {

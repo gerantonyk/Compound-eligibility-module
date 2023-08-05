@@ -73,14 +73,14 @@ contract CompoundEligibility is HatsEligibilityModule {
         override
         returns (bool eligible, bool standing)
     {
-        (bool eligible1, bool eligible2) = getModulesResult(_wearer, _hatId);
-        return (eligible1 && eligible2, true);
+        (bool eligible1, bool eligible2, bool standing1, bool standing2) = getModulesResult(_wearer, _hatId);
+        return (eligible1 && eligible2, standing1 && standing2);
     }
 
-    function getModulesResult(address _wearer, uint256 _hatId) public view returns (bool, bool) {
-        (bool eligible1,) = EMODULE1().getWearerStatus(_wearer, _hatId);
-        (bool eligible2,) = EMODULE2().getWearerStatus(_wearer, _hatId);
+    function getModulesResult(address _wearer, uint256 _hatId) public view returns (bool, bool, bool, bool) {
+        (bool eligible1, bool standing1) = EMODULE1().getWearerStatus(_wearer, _hatId);
+        (bool eligible2, bool standing2) = EMODULE2().getWearerStatus(_wearer, _hatId);
 
-        return (eligible1, eligible2);
+        return (eligible1, eligible2, standing1, standing2);
     }
 }
