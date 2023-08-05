@@ -43,5 +43,5 @@ This repo uses Foundry for development and testing. To get started:
 
 Implementation:
 
-CompoundEligibilityModule: 0xd0a9C16260244abAe2cAeC206C327ADE7Dad4902
-DisjunctionEligibilityModule: 0xA8235882E63F7B8E59B8993046a5A2520776fFf3
+CompoundEligibilityModule: 0x5ea0D0b35197561002f1caAb7d85346fcC8A3b72
+DisjunctionEligibilityModule: 0xE7C3CC12A41b4f4f24BA175AEAFc2F7952B03a2b
