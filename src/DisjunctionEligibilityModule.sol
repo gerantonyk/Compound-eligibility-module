@@ -66,7 +66,7 @@ contract DisjunctionEligibility is CompoundEligibility {
         override
         returns (bool eligible, bool standing)
     {
-        (bool eligible1, bool eligible2) = getModulesResult(_wearer, _hatId);
-        return (eligible1 || eligible2, true);
+        (bool eligible1, bool eligible2, bool standing1, bool standing2) = getModulesResult(_wearer, _hatId);
+        return (eligible1 || eligible2, standing1 || standing2);
     }
 }

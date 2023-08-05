@@ -17,6 +17,6 @@ contract MockElegibilityModule is HatsEligibilityModule {
     function getWearerStatus(address wearer, uint256) public view override returns (bool eligible, bool standing) {
         bool elegible = (wearer == elegible1 || wearer == elegible2);
 
-        return (elegible, true);
+        return (elegible, elegible);
     }
 }

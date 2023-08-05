@@ -125,7 +125,8 @@ contract GetWearerStatus is WithInstanceTest {
     function _eligibilityCheck(address _wearer, bool expect) internal {
         (bool eligible, bool standing) = instance.getWearerStatus(_wearer, compoundHat);
         assertEq(eligible, expect, "eligible");
-        assertEq(standing, true, "standing");
+        console2.log("standing", standing);
+        assertEq(standing, expect, "standing");
     }
 
     function test_getWearerStatus_true_and_false() public {
